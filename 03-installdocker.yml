@@ -6,4 +6,4 @@
     - name: Install base packages
       package:
         name: docker-1.13.1
-        state: latest
+        state: present
