@@ -67,7 +67,7 @@
     ignore_errors: yes
 
   - name: Mkfs xfs on etcd-lv
-    command: mkfs.xfs mapper/etcd--vg-etcd--lv
+    command: mkfs.xfs /dev/mapper/etcd--vg-etcd--lv
     ignore_errors: yes
 
   - name: Make /var/lib/etcd
@@ -109,7 +109,7 @@
     ignore_errors: yes
 
   - name: Mkfs xfs on origin-lv
-    command: mkfs.xfs mapper/origin--vg-origin--lv
+    command: mkfs.xfs /dev/mapper/origin--vg-origin--lv
     ignore_errors: yes
 
   - name: Make /var/lib/origin
