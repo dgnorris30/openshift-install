@@ -1,0 +1,17 @@
+# hosts file for sys-dev1.ris.wustl.edu
+[OSEv3:children]
+masters
+etcd
+nodes
+
+[OSEv3:vars]
+
+[masters:children]
+common_openshift_sys-dev1_master
+
+[etcd:children]
+common_openshift_sys-dev1_app
+common_openshift_sys-dev1_infra
+
+[nodes:children]
+common_openshift_sys-dev1_app
