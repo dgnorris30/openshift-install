@@ -1,0 +1,6 @@
+---
+- hosts: all
+  pre_tasks:
+  - include: /Users/3ledi/AF/openshift/openshift-ansible-contrib/roles/subscription-manager/pre_tasks/pre_tasks.yml
+  roles:
+    - { role: /Users/3ledi/AF/openshift/openshift-ansible-contrib/roles/subscription-manager,  tags: 'subscription-manager' }

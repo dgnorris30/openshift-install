@@ -1,0 +1,41 @@
+- hosts: masters[0]
+  vars:
+  - oc_command: "/usr/bin/oc --config=/etc/origin/master/admin.kubeconfig"
+
+  tasks:
+  - name: Fail if no password specified
+    fail:
+      msg: "No ldap_password found. Needs to be defined in inventory."
+    when:
+      ldap_password == ""
+
+  - name: ensure we have oc
+    command: oc whoami
+
+  - name: create project cluster-ops
+    command: oc new-project cluster-ops
+    ignore_errors: true
+
+  - name: switch to project
+    command: oc project cluster-ops
+
+  - name: render group sync template
+    template:
+      src: templates/cronjob-ldap-group-sync.yml.j2
+      dest: /tmp/cronjob-ldap-group-sync.yml
+      mode: 0644
+
+  - name: load template
+    shell: oc process -f /tmp/cronjob-ldap-group-sync.yml|oc create -f -
+    ignore_errors: yes
+
+  - name: Remove template temporary file
+    file:
+      name: /tmp/cronjob-ldap-group-sync.yml
+      state: absent
+
+  - name: Assign cluster-admin role to specific groups
+    shell: "{{ oc_command }} adm policy add-cluster-role-to-group cluster-admin {{ item }}"
+    with_items:
+    - paas-dev
+    - paas-admin

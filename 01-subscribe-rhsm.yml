@@ -1,0 +1,56 @@
+---
+- hosts: all
+  vars:
+    redhat_user:
+    redhat_password:
+#    sat_org_id:
+    sat_pool_ids:
+#    sat_activation_key:
+
+  tasks:
+
+  - name: Register to RHSM
+    redhat_subscription:
+      state: present
+      auto_attach: true
+#      activationkey: "{{sat_activation_key}}"
+#      org_id: "{{sat_org_id}}"
+      username: "{{redhat_user}}"
+      password: "{{redhat_password}}"
+      pool_ids: "{{sat_pool_ids}}"
+
+  - name: Disable all repos
+    rhsm_repository:
+      name: "*"
+      state: disabled
+
+  - name: Enable a RHSM repository
+    rhsm_repository:
+      name: "{{ item }}"
+      state: enabled
+    with_items:
+    - rhel-7-server-rpms
+    - rhel-7-server-extras-rpms
+    - rhel-7-server-ose-3.11-rpms
+    - rhel-7-server-ansible-2.6-rpms
+
+  - name: Update everything
+    yum:
+      name: "*"
+      state: latest
+
+  - name: Reboot required - Step 1
+    command: needs-restarting -r
+    register: reboot_required
+    ignore_errors: True
+    changed_when: False
+    when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+  - name: Reboot required - Step 2
+    shell: ( /bin/sleep 5 ; shutdown -r now "Ansible updates triggered" ) &
+    async: 30
+    poll: 0
+    ignore_errors: true
+    notify:
+      - waiting for server to come back after reboot
+    when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and reboot_required.rc == 1
