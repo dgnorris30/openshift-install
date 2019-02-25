@@ -2,7 +2,7 @@
 - hosts: common_openshift:!ansible
   vars:
     # '/dev/' is prepended to this value
-    docker_device: rhel/docker
+    docker_device: sdc
   tasks:
   - name: Install docker
     yum:
@@ -44,7 +44,7 @@
 - hosts:
     - common_openshift_sys-dev1_master
   vars:
-    etcd_device: rhel/etcd
+    etcd_device: sdd
   gather_facts: no
   become: yes
   tasks:
@@ -54,39 +54,39 @@
       name: lvm2
       state: present
 
-#  - name: Create PV on "{{ etcd_device }}"
-#    command: pvcreate -ff -y "{{ etcd_device }}"
-#    ignore_errors: yes
-#
-#  - name: Create VG etcd-vg
-#    command: vgcreate etcd-vg "{{ etcd_device }}"
-#    ignore_errors: yes
-#
-#  - name: Create LV etcd-lv
-#    command: lvcreate -n etcd-lv -l 100%VG etcd-vg
-#    ignore_errors: yes
-#
-#  - name: Mkfs xfs on etcd-lv
-#    command: mkfs.xfs mapper/etcd--vg-etcd--lv
-#    ignore_errors: yes
-#
+  - name: Create PV on "{{ etcd_device }}"
+    command: pvcreate -ff -y "{{ etcd_device }}"
+    ignore_errors: yes
+
+  - name: Create VG etcd-vg
+    command: vgcreate etcd-vg "{{ etcd_device }}"
+    ignore_errors: yes
+
+  - name: Create LV etcd-lv
+    command: lvcreate -n etcd-lv -l 100%VG etcd-vg
+    ignore_errors: yes
+
+  - name: Mkfs xfs on etcd-lv
+    command: mkfs.xfs mapper/etcd--vg-etcd--lv
+    ignore_errors: yes
+
   - name: Make /var/lib/etcd
     file:
       path: /var/lib/etcd
       state: directory
 
-#  - name: Update fstab
-#    lineinfile:
-#      path: /etc/fstab
-#      regexp: etcd
-#      line: 'mapper/etcd--vg-etcd--lv /var/lib/etcd xfs defaults 0 0'
+  - name: Update fstab
+    lineinfile:
+      path: /etc/fstab
+      regexp: etcd
+      line: 'mapper/etcd--vg-etcd--lv /var/lib/etcd xfs defaults 0 0'
 
   - name: Mount filesystem
     shell: 'mount -a'
 
 - hosts: common_openshift:!masters:!ansible
   vars:
-    origin_device: rhel/origin
+    origin_device: sdd
   gather_facts: no
   become: yes
   tasks:
@@ -96,32 +96,32 @@
       name: lvm2
       state: present
 
-#  - name: Create PV on "{{ origin_device }}"
-#    command: pvcreate -ff -y "{{ origin_device }}"
-#    ignore_errors: yes
-#
-#  - name: Create VG origin-vg
-#    command: vgcreate origin-vg "{{ origin_device }}"
-#    ignore_errors: yes
-#
-#  - name: Create LV origin-lv
-#    command: lvcreate -n origin-lv -l 100%VG origin-vg
-#    ignore_errors: yes
-#
-#  - name: Mkfs xfs on origin-lv
-#    command: mkfs.xfs mapper/origin--vg-origin--lv
-#    ignore_errors: yes
-#
+  - name: Create PV on "{{ origin_device }}"
+    command: pvcreate -ff -y "{{ origin_device }}"
+    ignore_errors: yes
+
+  - name: Create VG origin-vg
+    command: vgcreate origin-vg "{{ origin_device }}"
+    ignore_errors: yes
+
+  - name: Create LV origin-lv
+    command: lvcreate -n origin-lv -l 100%VG origin-vg
+    ignore_errors: yes
+
+  - name: Mkfs xfs on origin-lv
+    command: mkfs.xfs mapper/origin--vg-origin--lv
+    ignore_errors: yes
+
   - name: Make /var/lib/origin
     file:
       path: /var/lib/origin
       state: directory
 
-#  - name: Update fstab
-#    lineinfile:
-#      path: /etc/fstab
-#      regexp: origin
-#      line: 'mapper/origin--vg-origin--lv /var/lib/origin xfs defaults 0 0'
+  - name: Update fstab
+    lineinfile:
+      path: /etc/fstab
+      regexp: origin
+      line: 'mapper/origin--vg-origin--lv /var/lib/origin xfs defaults 0 0'
 
   - name: Mount filesystem
     shell: 'mount -a'
