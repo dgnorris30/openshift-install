@@ -1,0 +1,4 @@
+- import_playbook: 01-subscribe-rhsm.yml
+- import_playbook: 02-installpackages.yml
+- import_playbook: 03-installdocker.yml
+- import_playbook: 04-dockerstoragesetup.yml

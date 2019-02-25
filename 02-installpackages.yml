@@ -1,8 +1,15 @@
 ---
 - name: OCP | Installing Base Packages
-  hosts: all
+  hosts:
+    - common_openshift
   become: yes
   tasks:
+    - name: rebuild the rpm database
+      command:
+        argv:
+          - rpmdb
+          - --rebuilddb
+
     - name: Install base packages
       package:
         name: "{{ item }}"

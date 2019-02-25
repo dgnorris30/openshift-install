@@ -1,10 +1,14 @@
 ---
-- hosts: all
+- hosts:
+  - common_openshift
+  vars_prompt:
+    - name: redhat_password
+      prompt: rhn password
+      private: yes
   vars:
-    redhat_user:
-    redhat_password:
+    redhat_user: WashU_RIS
 #    sat_org_id:
-    sat_pool_ids:
+    sat_pool_ids: 8a85f99a68b938ff0168bf5a536257ed
 #    sat_activation_key:
 
   tasks:
