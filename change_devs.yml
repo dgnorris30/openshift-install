@@ -1,0 +1,19 @@
+---
+- hosts:
+  - common_openshift
+  gather_facts: no
+  tasks:
+    - mount:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /var/lib/etcd
+        - /var/lib/origin
+
+    - shell: |
+        lvremove -y /dev/rhel/{{ item }}
+      failed_when: false
+      loop:
+        - docker
+        - etcd
+        - origin
