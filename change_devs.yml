@@ -9,6 +9,8 @@
       loop:
         - /var/lib/etcd
         - /var/lib/origin
+      tags:
+        - unmount
 
     - shell: |
         lvremove -y /dev/rhel/{{ item }}
@@ -17,3 +19,21 @@
         - docker
         - etcd
         - origin
+      tags:
+        - rm-vg
+
+    - command:
+        argv:
+          - partprobe
+      tags:
+        - refresh-block-devs
+
+    - command:
+        argv:
+          - lsblk
+          - /dev/{{ item }}
+      loop:
+        - sdc
+        - sdd
+      tags:
+        - check-block-devs
