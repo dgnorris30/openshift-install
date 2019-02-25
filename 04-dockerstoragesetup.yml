@@ -44,7 +44,7 @@
 - hosts:
     - common_openshift_sys-dev1_master
   vars:
-    etcd_device: sdd
+    etcd_device: /dev/sdd
   gather_facts: no
   become: yes
   tasks:
@@ -86,7 +86,7 @@
 
 - hosts: common_openshift:!masters:!ansible
   vars:
-    origin_device: sdd
+    origin_device: /dev/sdd
   gather_facts: no
   become: yes
   tasks:
