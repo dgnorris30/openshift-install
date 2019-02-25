@@ -1,5 +1,6 @@
 ---
-- hosts: common_openshift:!ansible
+- hosts:
+    - common_openshift
   vars:
     # '/dev/' is prepended to this value
     docker_device: sdc
@@ -81,10 +82,19 @@
       regexp: etcd
       line: '/dev/mapper/etcd--vg-etcd--lv /var/lib/etcd xfs defaults 0 0'
 
+  - name: Remove origin fstab entry
+    lineinfile:
+      path: /etc/fstab
+      regexp: origin
+      line: '/dev/mapper/origin--vg-origin--lv /var/lib/origin xfs defaults 0 0'
+      state: absent
+
   - name: Mount filesystem
     shell: 'mount -a'
 
-- hosts: common_openshift:!masters:!ansible
+- hosts:
+  - common_openshift
+  - "!common_openshift_sys-dev1_master"
   vars:
     origin_device: /dev/sdd
   gather_facts: no
@@ -126,7 +136,8 @@
   - name: Mount filesystem
     shell: 'mount -a'
 
-- hosts: common_openshift:!ansible
+- hosts:
+    - common_openshift
   gather_facts: no
   become: yes
   tasks:
