@@ -1,7 +1,7 @@
 ---
-- hosts: all:!ansible
+- hosts: all
   vars:
-    docker_device: nvme2n1
+    docker_device:
   tasks:
   - name: Install docker
     yum:
@@ -42,7 +42,7 @@
 
 - hosts: masters
   vars:
-    etcd_device: /dev/nvme1n1
+    etcd_device: /dev/
   gather_facts: no
   become: yes
   tasks:
@@ -52,21 +52,24 @@
       name: lvm2
       state: present
 
-  - name: Create PV on "{{ etcd_device }}"
-    command: pvcreate -ff -y "{{ etcd_device }}"
-    ignore_errors: yes
-
-  - name: Create VG etcd-vg
-    command: vgcreate etcd-vg "{{ etcd_device }}"
-    ignore_errors: yes
+  - name: Create PV and LV on "{{ etcd_device }}"
+    lvg:
+      vg: etcd-vg
+      pvs: "{{ etcd_device }}"
+      state: present
 
   - name: Create LV etcd-lv
-    command: lvcreate -n etcd-lv -l 100%VG etcd-vg
-    ignore_errors: yes
+    lvol:
+      vg: etcd-vg
+      lv: etcd-lv
+      size: 100%VG
+      state: present
 
   - name: Mkfs xfs on etcd-lv
-    command: mkfs.xfs /dev/mapper/etcd--vg-etcd--lv
-    ignore_errors: yes
+    filesystem:
+      fstype: xfs
+      dev: /dev/mapper/etcd--vg-etcd--lv
+#    command: mkfs.xfs /dev/mapper/etcd--vg-etcd--lv
 
   - name: Make /var/lib/etcd
     file:
@@ -82,9 +85,9 @@
   - name: Mount filesystem
     shell: 'mount -a'
 
-- hosts: all:!masters:!ansible
+- hosts: all:!masters
   vars:
-    origin_device: /dev/nvme1n1
+    origin_device: /dev/
   gather_facts: no
   become: yes
   tasks:
@@ -94,21 +97,29 @@
       name: lvm2
       state: present
 
-  - name: Create PV on "{{ origin_device }}"
-    command: pvcreate -ff -y "{{ origin_device }}"
-    ignore_errors: yes
-
-  - name: Create VG origin-vg
-    command: vgcreate origin-vg "{{ origin_device }}"
-    ignore_errors: yes
+  - name: Create PV and LV on "{{ origin_device }}"
+    lvg:
+      vg: origin-vg
+      pvs: "{{ origin_device }}"
+      state: present
 
   - name: Create LV origin-lv
-    command: lvcreate -n origin-lv -l 100%VG origin-vg
-    ignore_errors: yes
+    lvol:
+      vg: origin-vg
+      lv: origin-lv
+      size: 100%VG
+      state: present
+
+#    command: pvcreate -ff -y "{{ origin_device }}"
+#    command: vgcreate origin-vg "{{ origin_device }}"
+#    command: lvcreate -n origin-lv -l 100%VG origin-vg
 
   - name: Mkfs xfs on origin-lv
-    command: mkfs.xfs /dev/mapper/origin--vg-origin--lv
-    ignore_errors: yes
+    filesystem:
+      fstype: xfs
+      dev: /dev/mapper/origin--vg-origin--lv
+
+#    command: mkfs.xfs /dev/mapper/origin--vg-origin--lv
 
   - name: Make /var/lib/origin
     file:
@@ -130,12 +141,18 @@
   tasks:
 
   - name: Make sure docker is stopped
-    command: "systemctl stop docker"
-    ignore_errors: true
+    systemd:
+      name: docker
+      state: stopped
+
+#    command: "systemctl stop docker"
 
   - name: Make sure docker storage is stopped
-    command: "systemctl stop docker-storage-setup"
-    ignore_errors: true
+    systemd:
+      name: docker
+      state: stopped
+
+#    command: "systemctl stop docker-storage-setup"
 
   - name: Stop docker mount
     systemd:
