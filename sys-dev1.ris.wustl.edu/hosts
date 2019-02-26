@@ -27,9 +27,8 @@ openshift_portal_net=10.25.25.0/24
 os_sdn_network_plugin_name=ovs-multitenant
 #openshift_docker_blocked_registries=['reg1','reg2']
 #openshift_master_identity_providers=
-openshift_master_identity_providers=[{'name': 'htpasswd_auth',
-'login': 'true', 'challenge': 'true',
-'kind': 'HTPasswdPasswordIdentityProvider',}]
+openshift_master_identity_providers=[{'name': 'htpasswd_auth','login': 'true', 'challenge': 'true','kind': 'HTPasswdPasswordIdentityProvider',}]
+
 openshift_master_default_subdomain=apps.sys-dev1.ris.wustl.edu
 #openshift_storage_glusterfs_namespace=app-storage
 #openshift_storage_glusterfs_storageclass=true
@@ -48,13 +47,14 @@ openshift_hosted_registry_storage_volume_name=registry
 openshift_hosted_registry_storage_volume_size=5Ti
 
 
-openshift_logging_install_logging=true
-openshift_logging_storage_kind=nfs
-openshift_logging_storage_access_modes=['ReadWriteOnce']
-openshift_logging_storage_host=storage-gluster-dev-node-1.ris.wustl.edu
-openshift_logging_storage_nfs_directory=/ocp-registry
-openshift_logging_storage_volume_name=logging
-openshift_logging_storage_volume_size=10Gi
+openshift_logging_install_logging=false
+#openshift_logging_install_logging=true
+#openshift_logging_storage_kind=nfs
+#openshift_logging_storage_access_modes=['ReadWriteOnce']
+#openshift_logging_storage_host=storage-gluster-dev-node-1.ris.wustl.edu
+#openshift_logging_storage_nfs_directory=/ocp-registry
+#openshift_logging_storage_volume_name=logging
+#openshift_logging_storage_volume_size=10Gi
 
 openshift_metrics_install_metrics=false
 
