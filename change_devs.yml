@@ -2,6 +2,8 @@
 - hosts:
   - common_openshift
   gather_facts: no
+  vars:
+    ocp_vg: rhel
   tasks:
     - mount:
         path: "{{ item }}"
@@ -12,15 +14,18 @@
       tags:
         - unmount
 
-    - shell: |
-        lvremove -y /dev/rhel/{{ item }}
+    - name: remove ocp lvols
+      lvol:
+        vg: "{{ ocp_vg }}"
+        lv: "{{ item }}"
+        state: absent
       failed_when: false
       loop:
         - docker
         - etcd
         - origin
       tags:
-        - rm-vg
+        - rm-vol
 
     - command:
         argv:
