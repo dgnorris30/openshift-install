@@ -1,0 +1,12 @@
+---
+- hosts:
+    - common_openshift
+  gather_facts: no
+  tasks:
+    - shell: puppet config print agent_disabled_lockfile | awk '{ print $NF }'
+      register: puppet_lockfile
+      check_mode: no
+      changed_when: false
+    - copy:
+        dest: "{{ puppet_lockfile.stdout_lines.0 | trim }}"
+        content: '{"disabled_message":"ITDEV-10824"}'
