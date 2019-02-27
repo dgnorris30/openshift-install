@@ -10,3 +10,13 @@
     - copy:
         dest: "{{ puppet_lockfile.stdout_lines.0 | trim }}"
         content: '{"disabled_message":"ITDEV-10824"}'
+    - service:
+        name: process-exporter
+        state: stopped
+      tags:
+        - disable-prometheus
+    - service:
+        name: node_exporter
+        state: stopped
+      tags:
+        - disable-prometheus
