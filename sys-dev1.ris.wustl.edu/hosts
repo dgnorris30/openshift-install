@@ -24,12 +24,13 @@ openshift_master_cluster_public_hostname=sys-dev1.ris.wustl.edu
 
 osm_cluster_network_cidr=10.25.24.0/24
 openshift_portal_net=10.25.25.0/24
+osm_host_subnet_length=4
 os_sdn_network_plugin_name=redhat/openshift-ovs-multitenant
 #openshift_docker_blocked_registries=['reg1','reg2']
 #openshift_master_identity_providers=
 openshift_master_identity_providers=[{'name': 'htpasswd_auth','login': 'true', 'challenge': 'true','kind': 'HTPasswdPasswordIdentityProvider',}]
 
-openshift_master_default_subdomain=ris.wustl.edu
+openshift_master_default_subdomain=common-sys-dev1-lb-2.ris.wustl.edu
 #openshift_storage_glusterfs_namespace=app-storage
 #openshift_storage_glusterfs_storageclass=true
 #openshift_storage_glusterfs_storageclass_default=false
