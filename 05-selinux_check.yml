@@ -1,0 +1,7 @@
+---
+- hosts: all
+  tasks:
+    - name: check SElinux
+      selinux:
+        policy: targeted
+        state: enforcing
