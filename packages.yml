@@ -1,0 +1,19 @@
+---
+- hosts:
+    - common_openshift
+  gather_facts: no
+  tasks:
+    - package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - tmux
+        - screen
+        - bind-utils
+        - lsof
+        - nmap-ncat
+        - psmisc
+        - pv
+        - tcpdump
+        - vim-common
+        - vim-enhanced
