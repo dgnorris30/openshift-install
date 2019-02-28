@@ -41,9 +41,20 @@ osm_default_node_selector: 'region=primary'
 
 #
 # Node defaults
-openshift_node_kubelet_args:
-  image-gc-high-threshold: ['80']
-  image-gc-low-threshold: ['70']
+# openshift_node_kubelet_args is replaced by openshift_node_groups[<item>].edits;
+#openshift_node_kubelet_args:
+#  image-gc-high-threshold: ['80']
+#  image-gc-low-threshold: ['70']
+#openshift_node_groups:
+#  - name: node-config-master
+#    labels:
+#      - 'node-role.kubernetes.io/master=true'
+#    edits: []
+#openshift_node_groups:
+#  - name: node-config-master
+#    labels:
+#      - 'node-role.kubernetes.io/master=true'
+#    edits: []
 
 #
 # DNSMASQ is Mandatory in OCP >= 3.6

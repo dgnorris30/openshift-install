@@ -1,5 +1,4 @@
 *.retry
 *.swp
-*.swo
 openshift-ansible
 xfer
