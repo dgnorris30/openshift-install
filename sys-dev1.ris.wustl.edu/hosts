@@ -65,14 +65,14 @@ openshift_metrics_install_metrics=false
 #node13.example.com glusterfs_devices='[ "/dev/xvdc", "/dev/xvdd" ]'
 
 [lb:children]
-common_openshift_sys-dev1_lb
+#common_openshift_sys-dev1_lb
 
 [lb]
 common-sys-dev1-lb-1.ris.wustl.edu
 common-sys-dev1-lb-2.ris.wustl.edu
 
 [masters:children]
-common_openshift_sys-dev1_master
+#common_openshift_sys-dev1_master
 
 [masters]
 common-sys-dev1-master-1.ris.wustl.edu
@@ -83,9 +83,9 @@ common-sys-dev1-master-3.ris.wustl.edu
 masters
 
 [nodes:children]
-common_openshift_sys-dev1_app
-common_openshift_sys-dev1_infra
-common_openshift_sys-dev1_master
+#common_openshift_sys-dev1_app
+#common_openshift_sys-dev1_infra
+#common_openshift_sys-dev1_master
 
 [nodes]
 common-sys-dev1-infra-1.ris.wustl.edu openshift_node_group_name="node-config-infra"
