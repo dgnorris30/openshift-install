@@ -1,102 +1,50 @@
 # hosts file for sys-dev1.ris.wustl.edu
+
+# This variable defines the HA method when deploying multiple masters.
+openshift_master_cluster_method=native
+
 [OSEv3:children]
 masters
-etcd
 nodes
-lb
-#glusterfs_registry
-#
-#[glusterfs_registry]
-#storage-gluster-dev-node-1.ris.wustl.edu
-#storage-gluster-dev-node-2.ris.wustl.edu
-#storage-gluster-dev-node-3.ris.wustl.edu
+infras
+etcd
 
 [OSEv3:vars]
-ansible_ssh_user=root
-openshift_deployment_type=openshift-enterprise
-openshift_release="v3.11"
-debug_level="6"
-openshift_master_api_port=8443
-openshift_master_console_port=8443
-openshift_master_cluster_method=native
+# DNS related entries that differ for each cluster
+openshift_master_default_subdomain=apps.ris.wustl.edu
+
 openshift_master_cluster_hostname=sys-dev1.ris.wustl.edu
 openshift_master_cluster_public_hostname=sys-dev1.ris.wustl.edu
-openshift_master_default_subdomain=common-sys-dev1-lb-2.ris.wustl.edu
 
-#osm_cluster_network_cidr=10.25.24.0/24
-#openshift_portal_net=10.25.25.0/24
+#openshift_metrics_hawkular_hostname=hawkular-metrics.internal-ocp.local
+
+# Allocatable System Resources per OCP group
+master_memory=1Gb
+appnode_memory=1Gb
+infranode_memory=1Gb
+
 osm_cluster_network_cidr=172.16.0.0/14
 openshift_portal_net=172.20.0.0/16
-osm_host_subnet_length=9
-os_sdn_network_plugin_name=redhat/openshift-ovs-multitenant
-#openshift_docker_blocked_registries=['reg1','reg2']
-#openshift_master_identity_providers=
-openshift_master_identity_providers=[{'name': 'htpasswd_auth','login': 'true', 'challenge': 'true','kind': 'HTPasswdPasswordIdentityProvider',}]
-
-#openshift_storage_glusterfs_namespace=app-storage
-#openshift_storage_glusterfs_storageclass=true
-#openshift_storage_glusterfs_storageclass_default=false
-#openshift_storage_glusterfs_block_deploy=true
-#openshift_storage_glusterfs_block_host_vol_size=100
-#openshift_storage_glusterfs_block_storageclass=true
-#openshift_storage_glusterfs_block_storageclass_default=false
-#openshift_hosted_registry_selector="node-role.kubernetes.io/infra=true"
-
-openshift_hosted_registry_storage_kind=nfs
-openshift_hosted_registry_storage_access_modes=['ReadWriteMany']
-openshift_hosted_registry_storage_host=storage-gluster-dev-node-1.ris.wustl.edu
-openshift_hosted_registry_storage_nfs_directory=/ocp-registry
-openshift_hosted_registry_storage_volume_name=registry
-openshift_hosted_registry_storage_volume_size=5Ti
-
-
-openshift_logging_install_logging=false
-#openshift_logging_install_logging=true
-#openshift_logging_storage_kind=nfs
-#openshift_logging_storage_access_modes=['ReadWriteOnce']
-#openshift_logging_storage_host=storage-gluster-dev-node-1.ris.wustl.edu
-#openshift_logging_storage_nfs_directory=/ocp-registry
-#openshift_logging_storage_volume_name=logging
-#openshift_logging_storage_volume_size=10Gi
-
-openshift_metrics_install_metrics=false
-
-#[glusterfs]
-#node11.example.com glusterfs_devices='[ "/dev/xvdc", "/dev/xvdd" ]'
-#node12.example.com glusterfs_devices='[ "/dev/xvdc", "/dev/xvdd" ]'
-#node13.example.com glusterfs_devices='[ "/dev/xvdc", "/dev/xvdd" ]'
-
-[lb:children]
-#common_openshift_sys-dev1_lb
-
-[lb]
-common-sys-dev1-lb-1.ris.wustl.edu
-common-sys-dev1-lb-2.ris.wustl.edu
-
-[masters:children]
-#common_openshift_sys-dev1_master
-
-[masters]
-common-sys-dev1-master-1.ris.wustl.edu
-common-sys-dev1-master-2.ris.wustl.edu
-common-sys-dev1-master-3.ris.wustl.edu
 
 [etcd:children]
 masters
 
 [nodes:children]
-#common_openshift_sys-dev1_app
-#common_openshift_sys-dev1_infra
-#common_openshift_sys-dev1_master
+masters
+appnodes
+infras
 
-[nodes]
-common-sys-dev1-infra-1.ris.wustl.edu openshift_node_group_name="node-config-infra"
-common-sys-dev1-infra-2.ris.wustl.edu openshift_node_group_name="node-config-infra"
-common-sys-dev1-infra-3.ris.wustl.edu openshift_node_group_name="node-config-infra"
-common-sys-dev1-app-1.ris.wustl.edu openshift_node_group_name="node-config-compute"
-common-sys-dev1-app-2.ris.wustl.edu openshift_node_group_name="node-config-compute"
-common-sys-dev1-app-3.ris.wustl.edu openshift_node_group_name="node-config-compute"
+[masters]
 common-sys-dev1-master-1.ris.wustl.edu openshift_node_group_name="node-config-master"
 common-sys-dev1-master-2.ris.wustl.edu openshift_node_group_name="node-config-master"
 common-sys-dev1-master-3.ris.wustl.edu openshift_node_group_name="node-config-master"
 
+[appnodes]
+common-sys-dev1-app-1.ris.wustl.edu openshift_node_group_name="node-config-compute"
+common-sys-dev1-app-2.ris.wustl.edu openshift_node_group_name="node-config-compute"
+common-sys-dev1-app-3.ris.wustl.edu openshift_node_group_name="node-config-compute"
+
+[infras]
+common-sys-dev1-infra-1.ris.wustl.edu openshift_node_group_name="node-config-infra"
+common-sys-dev1-infra-2.ris.wustl.edu openshift_node_group_name="node-config-infra"
+common-sys-dev1-infra-3.ris.wustl.edu openshift_node_group_name="node-config-infra"
