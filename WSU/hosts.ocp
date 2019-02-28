@@ -1,0 +1,59 @@
+[OSEv3:vars]
+
+# This variable defines the HA method when deploying multiple masters.
+openshift_master_cluster_method=native
+
+# This variable configures the subnet in which services will be created within
+# the OpenShift Origin SDN. This network block should be private and must
+# not conflict with any existing network blocks in your infrastructure to
+# which pods, nodes, or the master may require access to, or the installation
+# will fail. Defaults to 172.30.0.0/16, and cannot be re-configured after
+# deployment.
+openshift_portal_net=100.124.192.0/19
+
+# This variable overrides the SDN cluster network CIDR block. This is
+# the network from which pod IPs are assigned. This network block should
+# be a private block and must not conflict with existing network blocks
+# in your infrastructure to which pods, nodes, or the master may require
+# access.
+osm_cluster_network_cidr=100.70.0.0/16
+
+# DNS related entries that differ for each cluster
+openshift_master_default_subdomain=apps.internal-ocp.local
+openshift_master_cluster_hostname=master.internal-ocp.local
+openshift_master_cluster_public_hostname=console.internal-ocp.local
+openshift_metrics_hawkular_hostname=hawkular-metrics.internal-ocp.local
+
+# Allocatable System Resources per OCP group
+master_memory=512Mb
+appnode_memory=512Mb
+infranode_memory=512Mb
+
+# Create an OSEv3 group that contains all the main groups
+[OSEv3:children]
+masters
+nodes
+infras
+etcd
+lb
+
+# Each master node should also be configured for etcd
+[etcd:children]
+masters
+
+[nodes:children]
+masters
+appnodes
+infras
+
+[masters]
+master.internal-ocp.local openshift_node_group_name="node-config-master"
+
+[appnodes]
+node.internal-ocp.local openshift_node_group_name="node-config-compute"
+
+[infras]
+infra.internal-ocp.local openshift_node_group_name="node-config-infra"
+
+[lb]
+console.internal-ocp.local openshift_public_ip=192.168.56.101
