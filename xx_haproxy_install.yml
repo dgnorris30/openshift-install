@@ -1,0 +1,25 @@
+- hosts:
+    - common_openshift_sys-dev1_lb
+  gather_facts: no
+  tasks:
+    - package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - haproxy18
+    - copy:
+        dest: /etc/haproxy/haproxy.cfg
+        src: files/haproxy-master.cfg
+      register: proxy_config
+      when: ansible_host is match("common-sys-dev1-lb-1.ris.wustl.edu")
+    - copy:
+        dest: /etc/haproxy/haproxy.cfg
+        src: files/haproxy-infra.cfg
+      register: proxy_config
+      when: ansible_host is match("common-sys-dev1-lb-2.ris.wustl.edu")
+    - service:
+        name: haproxy
+        state: restarted
+      when: proxy_config.changed
+  tags:
+    - haproxy
