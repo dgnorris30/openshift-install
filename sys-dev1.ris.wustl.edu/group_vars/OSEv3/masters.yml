@@ -10,8 +10,10 @@
 # presents a certificate signed by the OpenShift internal CA.
 
 # Use standard https port tcp 443
-openshift_master_api_port: 8443
-openshift_master_console_port: 8443
+#openshift_master_api_port: 8443
+#openshift_master_console_port: 8443
+openshift_master_api_port: 443
+openshift_master_console_port: 443
 
 # Overwrite existing named certificates configuration if it differs from what is provided above.
 openshift_master_overwrite_named_certificates: true
