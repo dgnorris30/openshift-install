@@ -1,0 +1,19 @@
+---
+- hosts:
+    - OCEv3
+    - common_openshift
+  gather_facts: no
+  tasks:
+    - copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          { "bip": "172.21.0.1/16" }
+      register: docker_config
+    - debug:
+        var: docker_config
+        verbosity: 1
+    # careful, some hosts mysteriously needed a reboot
+    - service:
+        name: docker
+        state: restarted
+      when: docker_config.changed
