@@ -16,29 +16,25 @@
     - common-sys-dev1-master-1.ris.wustl.edu
   gather_facts: no
   tasks:
-    - file:
-        path: /mnt/ocp-nfs
-        state: directory
-    - mount:
-        path: /mnt/ocp-nfs
-        fstype: nfs
-        src: storage-gluster-dev-node-1:/ocp-registry
-        state: mounted
-    - copy:
-        dest: /mnt/ocp-nfs/xfer/.rsyncignore
-        content: |
-          .git*
-          *.retry
-          *.swp
-          *.swo
-          *.pyc
-          .rsyncignore
-    - shell: >
-         rsync -av /usr/share/ansible/openshift-ansible/ /mnt/ocp-nfs/xfer/
-         --exclude-from=/mnt/ocp-nfs/xfer/openshift-ansible/.gitignore
-         --delete
+    - name: playbook dirs pushed to bastion
+      synchronize:
+        src: ../{{ item }}
+        dest: /usr/share/ansible/openshift-ansible/
+        rsync_opts:
+          - --exclude-from=./files/.rsyncignore
+      loop:
+        - openshift-install
+        - facts
       tags:
-        - nfs-rsync
-  tags:
-    - nfs-mount
-
+        - sync-pb-push
+    - name: playbook dirs pulled from bastion
+      synchronize:
+        src: /usr/share/ansible/openshift-ansible/{{ item }}/
+        dest: ../{{ item }}/
+        mode: pull
+        rsync_opts:
+          - --exclude-from=./files/.rsyncignore
+      loop:
+        - openshift-install
+      tags:
+        - sync-pb-pull

@@ -1,0 +1,6 @@
+.git*
+*.retry
+*.swp
+*.swo
+*.pyc
+.rsyncignore
