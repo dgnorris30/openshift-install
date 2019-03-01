@@ -24,6 +24,20 @@
         fstype: nfs
         src: storage-gluster-dev-node-1:/ocp-registry
         state: mounted
+    - copy:
+        dest: /mnt/ocp-nfs/xfer/openshift-ansible/.gitignore
+        content: |
+          .git*
+          *.retry
+          *.swp
+          *.swo
+          *.pyc
+    - shell: >
+         rsync -av /usr/share/ansible/openshift-ansible /mnt/ocp-nfs/xfer
+         --exclude-from=/mnt/ocp-nfs/xfer/openshift-ansible/.gitignore
+         --del
+      tags:
+        - nfs-rsync
   tags:
     - nfs-mount
 
