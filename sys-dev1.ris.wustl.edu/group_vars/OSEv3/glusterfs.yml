@@ -12,7 +12,7 @@ openshift_storage_glusterfs_block_image: registry.access.redhat.com/rhgs3/rhgs-g
 openshift_storage_glusterfs_block_version: v3.11
 
 # Container image to use for heketi pods, enterprise
-openshift_storage_glusterfs_heketi_image: registry.access.redhat.com/rhgs3/rhgs-volmanager-rhel7"
+openshift_storage_glusterfs_heketi_image: registry.access.redhat.com/rhgs3/rhgs-volmanager-rhel7
 openshift_storage_glusterfs_heketi_version: v3.11
 
 # GlusterFS should be containerized
