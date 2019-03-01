@@ -1,0 +1,12 @@
+---
+- name: vim et al is installed
+  import_playbook: packages.yml
+
+- name: puppet and prometheus exporters are disabled
+  import_playbook: disable_puppet.yml
+
+- name: haproxy is installed on loadbalancer nodes
+  import_playbook: xx_haproxy_install.yml
+
+- name: docker bridge ip is on non-default network
+  import_playbook: docker_networking.yml
