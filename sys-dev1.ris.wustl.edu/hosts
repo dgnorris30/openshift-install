@@ -8,6 +8,7 @@ masters
 nodes
 infras
 etcd
+glusterfs
 
 [OSEv3:vars]
 # DNS related entries that differ for each cluster
@@ -48,3 +49,8 @@ common-sys-dev1-app-3.ris.wustl.edu openshift_node_group_name="node-config-compu
 common-sys-dev1-infra-1.ris.wustl.edu openshift_node_group_name="node-config-infra"
 common-sys-dev1-infra-2.ris.wustl.edu openshift_node_group_name="node-config-infra"
 common-sys-dev1-infra-3.ris.wustl.edu openshift_node_group_name="node-config-infra"
+
+[glusterfs]
+common-sys-dev1-infra-1.ris.wustl.edu glusterfs_ip=10.25.18.18 glusterfs_zone=1 glusterfs_devices='[ "/dev/sde" ]'
+common-sys-dev1-infra-2.ris.wustl.edu glusterfs_ip=10.25.18.19 glusterfs_zone=2 glusterfs_devices='[ "/dev/sde" ]'
+common-sys-dev1-infra-3.ris.wustl.edu glusterfs_ip=10.25.18.20 glusterfs_zone=3 glusterfs_devices='[ "/dev/sde" ]'
