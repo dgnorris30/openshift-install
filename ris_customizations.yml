@@ -10,3 +10,20 @@
 
 - name: docker bridge ip is on non-default network
   import_playbook: docker_networking.yml
+
+- name: nfs mount for rsyncing files from master
+  hosts:
+    - common-sys-dev1-master-1.ris.wustl.edu
+  gather_facts: no
+  tasks:
+    - file:
+        path: /mnt/ocp-nfs
+        state: directory
+    - mount:
+        path: /mnt/ocp-nfs
+        fstype: nfs
+        src: storage-gluster-dev-node-1:/ocp-registry
+        state: mounted
+  tags:
+    - nfs-mount
+
