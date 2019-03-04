@@ -20,3 +20,9 @@
         state: stopped
       tags:
         - disable-prometheus
+    - name: '*DISABLE* services as well'
+      shell: systemctl disable {{ item }}
+      loop:
+        - puppet
+        - node_exporter
+        - process-exporter
