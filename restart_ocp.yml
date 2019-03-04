@@ -1,0 +1,11 @@
+---
+- name: restart ocp services
+  hosts:
+    - masters
+  gather_facts: no
+  tasks:
+    - shell: master-restart {{ item }} {{ item }}
+      loop:
+        - api
+        - etcd
+        - controllers
