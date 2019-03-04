@@ -1,0 +1,27 @@
+# These are some of the commands we have run to apply RBAC policies
+
+# our initial htpasswd file "developer" user
+oc adm policy add-cluster-role-to-user cluster-admin developer
+
+# syseng AD group after LDAP auth config and groups sync
+oc adm policy add-cluster-role-to-group cluster-admin RIS-SYSENG
+
+# (after changing annotation for ClusterRoleBinding "self-provisioners"
+# (note plural) to what is seen in files/web_crb.yml (note api version -
+# it is different than what `oc edit clusterrolebinding` or `oc get -o yaml clusterrolebinding` return) 
+# remove special group from self-provisioners):
+
+# apiVersion: rbac.authorization.k8s.io/v1
+# ...
+#   annotations:
+#     rbac.authorization.kubernetes.io/autoupdate: 'false'
+
+oc adm policy remove-cluster-role-from-group self-provisioner system:authenticated:oauth
+
+# When we didn't make the annotation first, the clusterrolebinding
+# automatically deleted itself when we removed its only member (we
+# also couldn't seem to make effective edits, and it was automatically
+# recreated on cluster restart)
+
+# finally
+oc adm policy add-cluster-role-to-group self-provisioner RIS-APPENG
