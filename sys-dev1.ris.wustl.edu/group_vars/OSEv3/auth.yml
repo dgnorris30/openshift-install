@@ -1,3 +1,7 @@
+# LDAP Auth
+#openshift_master_identity_providers: [{'name': 'ldap', 'challenge': 'true', 'login': 'true', 'kind': 'LDAPPasswordIdentityProvider', 'attributes': {'id': ['sAMAccountName'], 'email': ['mail'], 'name': ['cn'], 'preferredUsername': ['sAMAccountName']}, 'bindDN': 'USER@LDAP_DOMAIN', 'bindPassword': 'PASSWORD', 'insecure': 'true', 'url': 'ldap://LDAP_SERVER:389/dc=XXX,dc=XXXX?sAMAccountName'}]
+#openshift_master_ldap_ca_file: /<PATH>/ldap_ca.pem`
+
 # HTPasswd Auth
 openshift_master_identity_providers: [{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 openshift_master_htpasswd_file: /usr/share/ansible/openshift-ansible/openshift-install/htpasswd
