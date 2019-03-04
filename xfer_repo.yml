@@ -8,8 +8,12 @@
       synchronize:
         src: ../{{ item }}
         dest: /usr/share/ansible/openshift-ansible/
+        delete: yes
         rsync_opts:
           - --exclude-from=./files/.rsyncignore
+          - --update
+          - --backup
+          - --backup-dir=~/rsync_backups
       loop:
         - openshift-install
         - facts
@@ -20,8 +24,12 @@
         src: /usr/share/ansible/openshift-ansible/{{ item }}/
         dest: ../{{ item }}/
         mode: pull
+        delete: yes
         rsync_opts:
           - --exclude-from=./files/.rsyncignore
+          - --update
+          - --backup
+          - --backup-dir=~/rsync_backups
       loop:
         - openshift-install
       tags:
