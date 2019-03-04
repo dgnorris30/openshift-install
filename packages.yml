@@ -4,16 +4,18 @@
   gather_facts: no
   tasks:
     - package:
-        name: "{{ item }}"
+        name: "{{ dev_packages }}"
         state: present
-      loop:
-        - tmux
-        - screen
-        - bind-utils
-        - lsof
-        - nmap-ncat
-        - psmisc
-        - pv
-        - tcpdump
-        - vim-common
-        - vim-enhanced
+      vars:
+        dev_packages:
+          - bind-utils
+          - lsof
+          - nmap-ncat
+          - psmisc
+          - pv
+          - screen
+          - strace
+          - tcpdump
+          - tmux
+          - vim-common
+          - vim-enhanced
