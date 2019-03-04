@@ -11,30 +11,8 @@
 - name: docker bridge ip is on non-default network
   import_playbook: docker_networking.yml
 
-- name: nfs mount for rsyncing files from master
-  hosts:
-    - common-sys-dev1-master-1.ris.wustl.edu
-  gather_facts: no
-  tasks:
-    - name: playbook dirs pushed to bastion
-      synchronize:
-        src: ../{{ item }}
-        dest: /usr/share/ansible/openshift-ansible/
-        rsync_opts:
-          - --exclude-from=./files/.rsyncignore
-      loop:
-        - openshift-install
-        - facts
-      tags:
-        - sync-pb-push
-    - name: playbook dirs pulled from bastion
-      synchronize:
-        src: /usr/share/ansible/openshift-ansible/{{ item }}/
-        dest: ../{{ item }}/
-        mode: pull
-        rsync_opts:
-          - --exclude-from=./files/.rsyncignore
-      loop:
-        - openshift-install
-      tags:
-        - sync-pb-pull
+- name: inventory and groupvars repo transfer
+  import_playbook: xfer_repo.yml
+
+- name: certificate distribution
+  import_playbook: site_certs.yml

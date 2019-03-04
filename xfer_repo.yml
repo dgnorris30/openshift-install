@@ -1,0 +1,28 @@
+---
+- name: nfs mount for rsyncing files from master
+  hosts:
+    - common-sys-dev1-master-1.ris.wustl.edu
+  gather_facts: no
+  tasks:
+    - name: playbook dirs pushed to bastion
+      synchronize:
+        src: ../{{ item }}
+        dest: /usr/share/ansible/openshift-ansible/
+        rsync_opts:
+          - --exclude-from=./files/.rsyncignore
+      loop:
+        - openshift-install
+        - facts
+      tags:
+        - sync-pb-push
+    - name: playbook dirs pulled from bastion
+      synchronize:
+        src: /usr/share/ansible/openshift-ansible/{{ item }}/
+        dest: ../{{ item }}/
+        mode: pull
+        rsync_opts:
+          - --exclude-from=./files/.rsyncignore
+      loop:
+        - openshift-install
+      tags:
+        - sync-pb-pull

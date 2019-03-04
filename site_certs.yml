@@ -1,0 +1,13 @@
+---
+- name: LDAP CA certificate
+  hosts:
+    - OSEv3
+  gather_facts: no
+  tasks:
+    - name: root CA cert for LDAP
+      copy:
+        src: files/addtrust_external_ca_root.pem
+        dest: /etc/pki/tls/certs
+      tags:
+        - ldap-certs
+        - auth
