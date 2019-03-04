@@ -73,3 +73,7 @@ osm_cockpit_plugins: ['cockpit-kubernetes']
 #
 # Disable OpenShift checks
 openshift_disable_check: disk_availability,package_availability,package_version,package_update,memory_availability,docker_image_availability,docker_storage
+
+#
+# Enable Glusterfs dynamic provisioning for Metrics & Logging
+openshift_master_dynamic_provisioning_enabled: true
