@@ -1,16 +1,18 @@
 ---
-# the cluster doesn't know about groups until you "sync" them by running "oc adm groups sync --sync-config=this_file.yml --confirm"
+# the cluster doesn't know about any groups until you "sync" them by running e.g.:
+# oc adm groups sync --sync-config=./this_file.yml --confirm
 # without "--confirm" it's a noop
 bindDN: "{{ ris_svc_binduser.username }}@{{ ris_svc_domain }}"
 bindPassword: "{{ ris_svc_binduser.password }}"
 ca: /etc/origin/master/ldap_ldap_ca.crt
 insecure: false
 kind: LDAPPasswordIdentityProvider
-# Should this be limited?
-# originally it was a duplicate key without the path/query part of the uri
+# Should this be a more specific base?
+# Originally was duplicate key without path/query part
 url: ldaps://accounts-ldap.wusm.wustl.edu:636/dc=accounts,dc=ad,dc=wustl,dc=edu?sAMAccountName
 kind: LDAPSyncConfig
 apiVersion: v1
+# see also: rfc2307(bis)? and activeDirectory (no first-class groups entries)
 augmentedActiveDirectory:
     groupsQuery:
         baseDN: "ou=RIS,ou=Groups,dc=accounts,dc=ad,dc=wustl,dc=edu"
@@ -18,7 +20,7 @@ augmentedActiveDirectory:
         derefAliases: never
         pageSize: 100
     groupUIDAttribute: dn
-    groupNameAttributes: [ cn ]
+    groupNameAttributes: [ cn ] 
     usersQuery:
         baseDN: "ou=Current,ou=People,dc=accounts,dc=ad,dc=wustl,dc=edu"
         scope: sub
