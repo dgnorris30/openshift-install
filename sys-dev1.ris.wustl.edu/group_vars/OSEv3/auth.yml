@@ -9,7 +9,7 @@ openshift_master_identity_providers:
   - name: ldap
     challenge: true
     login: true
-    kind': LDAPPasswordIdentityProvider
+    kind: LDAPPasswordIdentityProvider
     attributes:
       id:
         - sAMAccountName
