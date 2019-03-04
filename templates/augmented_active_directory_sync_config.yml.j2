@@ -1,0 +1,29 @@
+---
+# the cluster doesn't know about groups until you "sync" them by running "oc adm groups sync --sync-config=this_file.yml --confirm"
+# without "--confirm" it's a noop
+bindDN: "{{ ris_svc_binduser.username }}@{{ ris_svc_domain }}"
+bindPassword: "{{ ris_svc_binduser.password }}"
+ca: /etc/origin/master/ldap_ldap_ca.crt
+insecure: false
+kind: LDAPPasswordIdentityProvider
+# Should this be limited?
+# originally it was a duplicate key without the path/query part of the uri
+url: ldaps://accounts-ldap.wusm.wustl.edu:636/dc=accounts,dc=ad,dc=wustl,dc=edu?sAMAccountName
+kind: LDAPSyncConfig
+apiVersion: v1
+augmentedActiveDirectory:
+    groupsQuery:
+        baseDN: "ou=RIS,ou=Groups,dc=accounts,dc=ad,dc=wustl,dc=edu"
+        scope: sub
+        derefAliases: never
+        pageSize: 100
+    groupUIDAttribute: dn
+    groupNameAttributes: [ cn ]
+    usersQuery:
+        baseDN: "ou=Current,ou=People,dc=accounts,dc=ad,dc=wustl,dc=edu"
+        scope: sub
+        derefAliases: never
+        filter: '(&(objectClass=person)(memberOf:1.2.840.113556.1.4.1941:=CN=RIS,OU=RIS,OU=Groups,DC=accounts,DC=ad,DC=wustl,DC=edu))'
+        pageSize: 100
+    userNameAttributes: [ sAMAccountName ]
+    groupMembershipAttributes: [ memberOf ]
