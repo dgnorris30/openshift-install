@@ -29,7 +29,7 @@
           - --exclude-from=./files/.rsyncignore
           - --update
           - --backup
-          - --backup-dir=~/rsync_backups
+          - --backup-dir=$HOME/rsync_backups
       loop:
         - openshift-install
       tags:
