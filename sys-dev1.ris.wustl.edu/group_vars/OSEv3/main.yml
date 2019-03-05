@@ -37,7 +37,7 @@ openshift_install_examples: true
 
 #
 # By default pods run on appnodes
-osm_default_node_selector: 'region=primary'
+osm_default_node_selector: 'node-role.kubernetes.io/compute=true'
 
 #
 # Node defaults
