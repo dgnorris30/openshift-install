@@ -26,3 +26,19 @@
         - puppet
         - node_exporter
         - process-exporter
+
+- hosts:
+    - common_openshift
+  gather_facts: no
+  tags:
+    - disable-cron
+  tasks:
+    - cron:
+        name: disable puppet's node-exporter job
+        job: /bin/bash -lc -- /usr/local/bin/prometheus-ntpq-check 1>/dev/null 2>/dev/null
+        user: node-exporter
+        disabled: yes
+    - cron:
+        name: disable puppet's sshd job
+        job: renice -n 0 -p `pidof sshd` >/dev/null 2>&1
+        disabled: yes
