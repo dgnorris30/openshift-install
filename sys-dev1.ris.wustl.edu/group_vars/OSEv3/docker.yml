@@ -10,5 +10,5 @@ openshift_docker_additional_registries:
 # Block pulling images from docker.io.
 # Do not block registry.access.redhat.com as this will prevent using images
 # tagged images, even if they are in the node's docker cache.
-openshift_docker_blocked_registries:
-- docker.io
+#openshift_docker_blocked_registries:
+#- docker.io
