@@ -29,6 +29,61 @@
 
 - hosts:
     - common_openshift_sys-dev1_app
+    - common_openshift_sys-dev1_master
+    - common_openshift_sys-dev1_infra
+  gather_facts: no
+  serial: 1
+  vars:
+    master_node: common-sys-dev1-master-1.ris.wustl.edu
+    docker_bug_packages:
+      - docker-client-1.13.1-91.git07f3374.el7.x86_64
+      - docker-common-1.13.1-91.git07f3374.el7.x86_64
+      - docker-1.13.1-91.git07f3374.el7.x86_64
+      - docker-rhel-push-plugin-1.13.1-91.git07f3374.el7.x86_64
+    docker_downgrade_packages:
+      - docker-client-1.13.1-88.git07f3374.el7.x86_64
+      - docker-common-1.13.1-88.git07f3374.el7.x86_64
+      - docker-1.13.1-88.git07f3374.el7.x86_64
+      - docker-rhel-push-plugin-1.13.1-88.git07f3374.el7.x86_64
+  tasks:
+    - name: make node unschedulable
+      shell: |
+        oc adm manage-node {{ inventory_hostname }} --schedulable=false
+      delegate_to: "{{ master_node }}"
+      register: unschedule
+      when: inventory_hostname in groups['common_openshift_sys-dev1_app']
+    - name: drain pods
+      shell: |
+        oc adm drain {{ inventory_hostname }} --ignore-daemonsets --delete-local-data
+      delegate_to: "{{ master_node }}"
+      register: drain
+      when: inventory_hostname in groups['common_openshift_sys-dev1_app']
+    - service:
+        name: docker
+        state: stopped
+    - name: downgrade docker to avoid regression bug for restarting
+      yum:
+        allow_downgrade: yes
+        name: "{{ docker_downgrade_packages }}"
+        state: installed
+    - name: bug packages are removed
+      package:
+        name: "{{ docker_bug_packages }}"
+        state: absent
+    - service:
+        name: docker
+        state: started
+    - name: make node schedulable again
+      shell: |
+        oc adm manage-node {{ inventory_hostname }} --schedulable=true
+      delegate_to: "{{ master_node }}"
+      register: reschedule
+      when: inventory_hostname in groups['common_openshift_sys-dev1_app']
+  tags:
+    - downgrade-docker
+
+- hosts:
+    - common_openshift_sys-dev1_app
   gather_facts: no
   # We don't think it's necessary to do this in serial, or wait between nodes
   # but since we're not sure we'll go with one out of two.
