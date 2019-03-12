@@ -8,3 +8,36 @@
         regexp: ^((?!#).*--block-registry[\s=]+docker\.io.*)$
         line: '#\1'
         backrefs: yes
+      register: unblocked
+    - service:
+        name: docker
+        state: restarted
+      when: unblocked.changed
+
+- hosts:
+    - common_openshift_sys-dev1
+  gather_facts: no
+  # We don't think it's necessary to do this in serial, or wait between nodes
+  # but since we're not sure we'll go with one out of two.
+  serial: 1
+  tasks:
+    - service:
+        name: docker
+        state: restarted
+  tags:
+    - restart-docker
+
+- hosts:
+    - common_openshift_sys-dev1
+  gather_facts: no
+  # We don't think it's necessary to do this in serial, or wait between nodes
+  # but since we're not sure we'll go with one out of two.
+  serial: 1
+  tasks:
+    - shell: |
+        systemctl restart docker
+      register: docker_restart
+    - debug:
+        var: docker_restart
+  tags:
+    - restart-docker-by-hand
