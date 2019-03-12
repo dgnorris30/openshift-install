@@ -34,7 +34,7 @@
   # but since we're not sure we'll go with one out of two.
   serial: 1
   vars:
-    master_node: "{{ groups[common_openshift_sys-dev1_master] | random }}"
+    master_node: common-sys-dev1-master-1.ris.wustl.edu
   tasks:
     - name: make node unschedulable
       shell: |
@@ -43,18 +43,24 @@
       register: unschedule
     - name: drain pods
       shell: |
-        oc adm drain {{ inventory_hostname }} --ignore-daemonsets
+        oc adm drain {{ inventory_hostname }} --ignore-daemonsets --delete-local-data
       delegate_to: "{{ master_node }}"
       register: drain
     - name: restart docker "manually"
       shell: |
         systemctl restart docker
       register: docker_restart
+    - name: make node schedulable again
+      shell: |
+        oc adm manage-node {{ inventory_hostname }} --schedulable=true
+      delegate_to: "{{ master_node }}"
+      register: reschedule
     - debug:
         var: "{{ item }}"
       loop:
         - unschedule
         - drain
         - docker_restart
+        - reschedule
   tags:
     - restart-docker-by-hand
