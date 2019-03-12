@@ -28,16 +28,33 @@
     - restart-docker
 
 - hosts:
-    - common_openshift_sys-dev1
+    - common_openshift_sys-dev1_app
   gather_facts: no
   # We don't think it's necessary to do this in serial, or wait between nodes
   # but since we're not sure we'll go with one out of two.
   serial: 1
+  vars:
+    master_node: "{{ groups[common_openshift_sys-dev1_master] | random }}"
   tasks:
-    - shell: |
+    - name: make node unschedulable
+      shell: |
+        oc adm manage-node {{ inventory_hostname }} --schedulable=false
+      delegate_to: "{{ master_node }}"
+      register: unschedule
+    - name: drain pods
+      shell: |
+        oc adm drain {{ inventory_hostname }} --ignore-daemonsets
+      delegate_to: "{{ master_node }}"
+      register: drain
+    - name: restart docker "manually"
+      shell: |
         systemctl restart docker
       register: docker_restart
     - debug:
-        var: docker_restart
+        var: "{{ item }}"
+      loop:
+        - unschedule
+        - drain
+        - docker_restart
   tags:
     - restart-docker-by-hand
