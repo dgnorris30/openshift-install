@@ -2,6 +2,8 @@
 - hosts:
     - common_openshift_sys-dev1
   gather_facts: no
+  tags:
+    - enable-docker.io
   tasks:
     - lineinfile:
         path: /etc/sysconfig/docker
