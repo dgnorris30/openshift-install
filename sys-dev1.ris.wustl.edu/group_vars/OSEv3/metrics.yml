@@ -12,7 +12,7 @@ openshift_metrics_server_install: true
 openshift_metrics_install_metrics: true
 
 # namespace where the components will be deployed
-openshift_metrics_project: openshift-metrics
+openshift_metrics_project: openshift-infra
 
 # Storage Options
 # If openshift_metrics_storage_kind is unset then metrics will be stored
