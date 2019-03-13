@@ -1,8 +1,5 @@
 # hosts file for sys-dev1.ris.wustl.edu
 
-# This variable defines the HA method when deploying multiple masters.
-openshift_master_cluster_method=native
-
 [OSEv3:children]
 masters
 nodes
@@ -11,6 +8,9 @@ etcd
 glusterfs
 
 [OSEv3:vars]
+# This variable defines the HA method when deploying multiple masters.
+openshift_master_cluster_method=native
+
 # DNS related entries that differ for each cluster
 openshift_master_default_subdomain=apps.ris.wustl.edu
 
