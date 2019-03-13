@@ -1,5 +1,5 @@
 ---
-- name: nfs mount for rsyncing files from master
+- name: rsync files with master
   hosts:
     - common-sys-dev1-master-1.ris.wustl.edu
   gather_facts: no
